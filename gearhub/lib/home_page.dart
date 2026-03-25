@@ -29,10 +29,13 @@ class _HomePageState extends State<HomePage> {
     return CustomScrollView(
       slivers: [
         // ── Top Glass Bar ─────────────────────────
-        SliverToBoxAdapter(
-          child: GlassTopBar(
-            selectedTab: 0,
-            onTabChanged: widget.onTabSwitch,
+        SliverPersistentHeader(
+          pinned: true,
+          delegate: GlassTopBarDelegate(
+            child: GlassTopBar(
+              selectedTab: 0,
+              onTabChanged: widget.onTabSwitch,
+            )
           ),
         ),
 
@@ -167,6 +170,26 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class GlassTopBarDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+
+  GlassTopBarDelegate({required this.child});
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  double get maxExtent => 70; // your bar height
+  @override
+  double get minExtent => 70;
+
+  @override
+  bool shouldRebuild(covariant GlassTopBarDelegate oldDelegate) {
+    return oldDelegate.child != child;
+  }
+}
 // ─────────────────────────────────────────────
 //  Featured Car Card
 // ─────────────────────────────────────────────

@@ -4,6 +4,7 @@ import 'widgets.dart';
 import 'car_listing_model.dart';
 import 'car_detail_page.dart';
 import 'car_image_service.dart';
+import 'home_page.dart';
 
 // ─────────────────────────────────────────────
 //  Cars List Page
@@ -17,9 +18,15 @@ class CarsListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: GlassTopBar(selectedTab: 1, onTabChanged: onTabSwitch),
+        SliverPersistentHeader(
+        pinned: true,
+        delegate: GlassTopBarDelegate(
+          child: GlassTopBar(
+            selectedTab: 1, // cars tab
+            onTabChanged: onTabSwitch,
+          ),
         ),
+      ),
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
