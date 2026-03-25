@@ -9,7 +9,12 @@ class CarListing {
   final int seats;
   final String transmission;
   final String price;
-  final String emoji;
+
+  /// Flutter asset path, e.g. 'assets/images/ferrari_f40.jpg'
+  /// Place your images under assets/images/ and register
+  /// the folder in pubspec.yaml under flutter > assets.
+  final String imagePath;
+
   final Color accentColor;
   final String bodyStyle;
   final String fuelType;
@@ -24,7 +29,7 @@ class CarListing {
     required this.seats,
     required this.transmission,
     required this.price,
-    required this.emoji,
+    required this.imagePath,
     required this.accentColor,
     required this.bodyStyle,
     required this.fuelType,
@@ -40,14 +45,14 @@ class CarListing {
 // ─────────────────────────────────────────────
 class CarModel {
   final String name;
-  final String emoji;
+  final String imagePath;
   final String description;
   final int year;
   final Color accentColor;
 
   const CarModel({
     required this.name,
-    required this.emoji,
+    required this.imagePath,
     required this.description,
     required this.year,
     required this.accentColor,
@@ -60,13 +65,25 @@ class CarModel {
 class NewsItem {
   final String title;
   final String snippet;
-  final String emoji;
+
+  /// Asset path for the news thumbnail image.
+  final String imagePath;
 
   const NewsItem({
     required this.title,
     required this.snippet,
-    required this.emoji,
+    required this.imagePath,
   });
+}
+
+class CarAssets {
+  CarAssets._();
+
+  static const ferrariF40         = 'assets/images/f40.png';
+  static const koenigseggJesko    = 'assets/images/jesko.png';
+  static const paganiHuayra       = 'assets/images/pghuayra.png';
+  static const dodgeChallenger    = 'assets/images/SRT.png';
+  static const lamborghiniAvent   = 'assets/images/aventador.png';
 }
 
 // ─────────────────────────────────────────────
@@ -75,7 +92,7 @@ class NewsItem {
 const List<CarModel> featuredCars = [
   CarModel(
     name: 'Ferrari F40',
-    emoji: '🚗',
+    imagePath: CarAssets.ferrariF40,
     year: 1987,
     accentColor: Color(0xFFB71C1C),
     description:
@@ -85,7 +102,7 @@ const List<CarModel> featuredCars = [
   ),
   CarModel(
     name: 'Koenigsegg Jesko',
-    emoji: '🏎️',
+    imagePath: CarAssets.koenigseggJesko,
     year: 2020,
     accentColor: Color(0xFF546E7A),
     description:
@@ -95,7 +112,7 @@ const List<CarModel> featuredCars = [
   ),
   CarModel(
     name: 'Lamborghini Aventador',
-    emoji: '🏁',
+    imagePath: CarAssets.lamborghiniAvent,
     year: 2018,
     accentColor: Color(0xFFF9A825),
     description:
@@ -110,7 +127,7 @@ const List<CarModel> featuredCars = [
 // ─────────────────────────────────────────────
 const List<NewsItem> hotNews = [
   NewsItem(
-    emoji: '🏎️',
+    imagePath: CarAssets.koenigseggJesko,
     title: 'Koenigsegg Reveals Next-Gen Hypercar Platform',
     snippet:
         'Swedish manufacturer Koenigsegg has unveiled a new platform set to '
@@ -118,7 +135,7 @@ const List<NewsItem> hotNews = [
         'and lighter weight than the Jesko.',
   ),
   NewsItem(
-    emoji: '🔋',
+    imagePath: CarAssets.ferrariF40,
     title: 'Ferrari\'s First EV Confirmed for 2025',
     snippet:
         'Ferrari has officially confirmed its first fully electric vehicle, '
@@ -126,7 +143,7 @@ const List<NewsItem> hotNews = [
         'engineered to thrill.',
   ),
   NewsItem(
-    emoji: '🏁',
+    imagePath: CarAssets.lamborghiniAvent,
     title: 'Lamborghini Aventador Successor Spotted Testing',
     snippet:
         'Spy shots reveal the heavily camouflaged Lamborghini Revuelto successor '
@@ -134,7 +151,7 @@ const List<NewsItem> hotNews = [
         'V12 setup pushing beyond 1,001 hp.',
   ),
   NewsItem(
-    emoji: '🚗',
+    imagePath: CarAssets.paganiHuayra,
     title: 'Pagani Announces Limited Huayra Roadster BC Run',
     snippet:
         'Pagani has announced an ultra-limited run of the Huayra Roadster BC, '
@@ -144,7 +161,7 @@ const List<NewsItem> hotNews = [
 ];
 
 // ─────────────────────────────────────────────
-//  Static Data
+//  Static Car Listings Data
 // ─────────────────────────────────────────────
 const List<CarListing> carListings = [
   CarListing(
@@ -153,7 +170,7 @@ const List<CarListing> carListings = [
     seats: 2,
     transmission: 'Manual',
     price: '\$2,000,000',
-    emoji: '🚗',
+    imagePath: CarAssets.ferrariF40,
     accentColor: Color(0xFFB71C1C),
     bodyStyle: 'Supercar',
     fuelType: 'Petrol',
@@ -174,7 +191,7 @@ const List<CarListing> carListings = [
     seats: 2,
     transmission: 'Automatic',
     price: '\$3,000,000',
-    emoji: '🏎️',
+    imagePath: CarAssets.koenigseggJesko,
     accentColor: Color(0xFF546E7A),
     bodyStyle: 'Hypercar',
     fuelType: 'Petrol',
@@ -195,7 +212,7 @@ const List<CarListing> carListings = [
     seats: 2,
     transmission: 'Manual',
     price: '\$3,400,000',
-    emoji: '🏁',
+    imagePath: CarAssets.paganiHuayra,
     accentColor: Color(0xFF1565C0),
     bodyStyle: 'Hypercar',
     fuelType: 'Petrol',
@@ -216,7 +233,7 @@ const List<CarListing> carListings = [
     seats: 5,
     transmission: 'Automatic',
     price: '\$125,000',
-    emoji: '🚙',
+    imagePath: CarAssets.dodgeChallenger,
     accentColor: Color(0xFFB71C1C),
     bodyStyle: 'Muscle Car',
     fuelType: 'Petrol',
@@ -232,32 +249,12 @@ const List<CarListing> carListings = [
         'with brutal straight-line performance.',
   ),
   CarListing(
-    name: 'Koenigsegg Jesko',
-    variant: 'Attack',
-    seats: 2,
-    transmission: 'Automatic',
-    price: '\$3,000,000',
-    emoji: '🏎️',
-    accentColor: Color(0xFF546E7A),
-    bodyStyle: 'Hypercar',
-    fuelType: 'Petrol',
-    acceleration: '2.5s',
-    engine: 'V8 Twin-Turbo',
-    year: 2020,
-    description:
-        'The Koenigsegg Jesko Attack (2020–present) is an extreme track-focused '
-        'hypercar producing 1,600 hp on E85. Named after Jesko von Koenigsegg, '
-        'the father of founder Christian von Koenigsegg, it features the revolutionary '
-        'Light Speed Transmission (LST) with nine clutches and seven shafts. '
-        'Aerodynamically optimized to generate over 1,000 kg of downforce.',
-  ),
-  CarListing(
     name: 'Lamborghini Aventador',
     variant: 'SVJ',
     seats: 2,
     transmission: 'Automatic',
     price: '\$517,770',
-    emoji: '🏁',
+    imagePath: CarAssets.lamborghiniAvent,
     accentColor: Color(0xFFF9A825),
     bodyStyle: 'Supercar',
     fuelType: 'Petrol',

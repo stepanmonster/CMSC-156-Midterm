@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'car_listing_model.dart';
+import 'car_image_service.dart';
 
 // ─────────────────────────────────────────────
 //  Glass Top Bar
@@ -48,103 +49,73 @@ class GlassTopBar extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Home tab
-                      GestureDetector(
+                      _TabButton(
+                        label: 'Home',
+                        isSelected: selectedTab == 0,
                         onTap: () => onTabChanged(0),
-                        behavior: HitTestBehavior.opaque,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 280),
-                          curve: Curves.easeInOut,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(26),
-                            gradient: selectedTab == 0
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFEF7B50),
-                                      Color(0xFFB84A1C)
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : null,
-                            boxShadow: selectedTab == 0
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(0xFFEF5350)
-                                          .withOpacity(0.5),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Text(
-                            'Home',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: selectedTab == 0
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: selectedTab == 0
-                                  ? Colors.white
-                                  : Colors.white.withOpacity(0.50),
-                            ),
-                          ),
-                        ),
                       ),
-                      // Cars tab
-                      GestureDetector(
+                      _TabButton(
+                        label: 'Cars',
+                        isSelected: selectedTab == 1,
                         onTap: () => onTabChanged(1),
-                        behavior: HitTestBehavior.opaque,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 280),
-                          curve: Curves.easeInOut,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 28, vertical: 8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(26),
-                            gradient: selectedTab == 1
-                                ? const LinearGradient(
-                                    colors: [
-                                      Color(0xFFEF7B50),
-                                      Color(0xFFB84A1C)
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  )
-                                : null,
-                            boxShadow: selectedTab == 1
-                                ? [
-                                    BoxShadow(
-                                      color: const Color(0xFFEF5350)
-                                          .withOpacity(0.5),
-                                      blurRadius: 14,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ]
-                                : null,
-                          ),
-                          child: Text(
-                            'Cars',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: selectedTab == 1
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
-                              color: selectedTab == 1
-                                  ? Colors.white
-                                  : Colors.white.withOpacity(0.50),
-                            ),
-                          ),
-                        ),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _TabButton extends StatelessWidget {
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _TabButton({
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 280),
+        curve: Curves.easeInOut,
+        padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 8),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(26),
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [Color(0xFFEF7B50), Color(0xFFB84A1C)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: const Color(0xFFEF5350).withOpacity(0.5),
+                    blurRadius: 14,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            fontSize: 15,
+            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+            color: isSelected ? Colors.white : Colors.white.withOpacity(0.50),
           ),
         ),
       ),
@@ -188,7 +159,7 @@ class TopTabPill extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  Spec Card (used on Cars Page)
+//  Spec Card (used on Car Detail Page)
 // ─────────────────────────────────────────────
 class SpecCard extends StatelessWidget {
   final IconData icon;
@@ -273,7 +244,8 @@ class SpecCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  Glass Car Image Card (used on Cars Page)
+//  Glass Car Image Card (used on Car Detail Page)
+//  Shows a local asset image via CarAssetImage.
 // ─────────────────────────────────────────────
 class GlassCarImageCard extends StatelessWidget {
   final CarListing car;
@@ -284,74 +256,95 @@ class GlassCarImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          height: 220,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.10),
-                car.accentColor.withOpacity(0.10),
-              ],
+      child: SizedBox(
+        height: 220,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // ── Asset photo ────────────────────────
+            CarAssetImage(
+              assetPath: car.imagePath,
+              imageKey: car.name,
+              width: double.infinity,
+              height: 220,
+              fit: BoxFit.cover,
+              accentColor: car.accentColor,
             ),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.15),
-              width: 1,
+
+            // ── Gradient overlay ───────────────────
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.black.withOpacity(0.15),
+                    Colors.black.withOpacity(0.55),
+                  ],
+                ),
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 16,
-                left: 20,
+
+            // ── Glass border ───────────────────────
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1,
+                ),
+              ),
+            ),
+
+            // ── Year badge ─────────────────────────
+            Positioned(
+              top: 16,
+              left: 20,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.35),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.20),
+                    width: 1,
+                  ),
+                ),
                 child: Text(
                   '${car.year}',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withOpacity(0.6),
+                    color: Colors.white.withOpacity(0.85),
                     letterSpacing: 1,
                   ),
                 ),
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(car.emoji, style: const TextStyle(fontSize: 90)),
-                    // Replace with:
-                    // Image.asset('assets/${car.name}.png', height: 140, fit: BoxFit.contain)
-                  ],
-                ),
-              ),
-              // Sheen overlay
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(24)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white.withOpacity(0.08),
-                        Colors.transparent,
-                      ],
-                    ),
+            ),
+
+            // ── Top sheen ──────────────────────────
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withOpacity(0.08),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

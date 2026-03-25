@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'widgets.dart';
 import 'car_listing_model.dart';
 import 'car_detail_page.dart';
+import 'car_image_service.dart';
 
 // ─────────────────────────────────────────────
 //  Cars List Page
@@ -16,12 +17,9 @@ class CarsListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        // ── Top Glass Bar ─────────────────────────
         SliverToBoxAdapter(
           child: GlassTopBar(selectedTab: 1, onTabChanged: onTabSwitch),
         ),
-
-        // ── Page Title ────────────────────────────
         SliverToBoxAdapter(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
@@ -39,8 +37,6 @@ class CarsListPage extends StatelessWidget {
             ),
           ),
         ),
-
-        // ── Car Cards ─────────────────────────────
         SliverList(
           delegate: SliverChildBuilderDelegate(
             (ctx, i) => Padding(
@@ -61,8 +57,6 @@ class CarsListPage extends StatelessWidget {
             childCount: carListings.length,
           ),
         ),
-
-        // Bottom padding for nav bar
         const SliverToBoxAdapter(child: SizedBox(height: 110)),
       ],
     );
@@ -106,37 +100,44 @@ class _CarListCard extends StatelessWidget {
               padding: const EdgeInsets.all(14),
               child: Row(
                 children: [
-                  // ── Thumbnail ───────────────────
+                  // ── Thumbnail ───────────────────────
                   ClipRRect(
                     borderRadius: BorderRadius.circular(14),
-                    child: Container(
+                    child: SizedBox(
                       width: 110,
                       height: 90,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            car.accentColor.withOpacity(0.18),
-                            Colors.white.withOpacity(0.05),
-                          ],
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          car.emoji,
-                          style: const TextStyle(fontSize: 48),
-                        ),
-                        // Replace with real image:
-                        // Image.asset('assets/${car.name}.png', fit: BoxFit.contain)
+                      child: Stack(
+                        fit: StackFit.expand,
+                        children: [
+                          // Accent tint behind the image
+                          Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  car.accentColor.withOpacity(0.18),
+                                  Colors.white.withOpacity(0.05),
+                                ],
+                              ),
+                            ),
+                          ),
+                          CarAssetImage(
+                            assetPath: car.imagePath,
+                            imageKey: car.name,
+                            width: 110,
+                            height: 90,
+                            fit: BoxFit.cover,
+                            accentColor: car.accentColor,
+                          ),
+                        ],
                       ),
                     ),
                   ),
 
                   const SizedBox(width: 14),
 
-                  // ── Details ─────────────────────
+                  // ── Details ─────────────────────────
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

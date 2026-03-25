@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'widgets.dart';
 import 'car_listing_model.dart';
+import 'car_image_service.dart';
 
 // ─────────────────────────────────────────────
 //  Car Detail Page
@@ -23,7 +24,7 @@ class CarDetailPage extends StatelessWidget {
       extendBody: true,
       body: Stack(
         children: [
-          // ── Ambient orbs (matching main app) ────
+          // ── Ambient orbs ────────────────────────
           _AmbientOrb(
             color: const Color(0xFFB71C1C).withOpacity(0.20),
             size: 340,
@@ -147,7 +148,7 @@ class CarDetailPage extends StatelessWidget {
                     ),
                     SpecCard(
                       icon: Icons.settings_rounded,
-                      label: 'Engine Car',
+                      label: 'Engine',
                       value: car.engine,
                       accentColor: const Color(0xFF42A5F5),
                     ),
@@ -173,7 +174,7 @@ class CarDetailPage extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  Car Image Card
+//  Car Image Card  (detail page hero)
 // ─────────────────────────────────────────────
 class _CarImageCard extends StatelessWidget {
   final CarListing car;
@@ -183,73 +184,95 @@ class _CarImageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(24),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-        child: Container(
-          height: 220,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(24),
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white.withOpacity(0.10),
-                car.accentColor.withOpacity(0.10),
-              ],
+      child: SizedBox(
+        height: 220,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            // ── Asset photo ────────────────────────
+            CarAssetImage(
+              assetPath: car.imagePath,
+              imageKey: car.name,
+              width: double.infinity,
+              height: 220,
+              fit: BoxFit.cover,
+              accentColor: car.accentColor,
             ),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.15),
-              width: 1,
+
+            // ── Bottom scrim ───────────────────────
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Colors.transparent,
+                    Colors.black.withOpacity(0.55),
+                  ],
+                ),
+              ),
             ),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 16,
-                left: 20,
+
+            // ── Glass border ───────────────────────
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.15),
+                  width: 1,
+                ),
+              ),
+            ),
+
+            // ── Year badge ─────────────────────────
+            Positioned(
+              top: 16,
+              left: 20,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.38),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.18),
+                    width: 1,
+                  ),
+                ),
                 child: Text(
                   '${car.year}',
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: Colors.white.withOpacity(0.6),
+                    color: Colors.white.withOpacity(0.85),
                     letterSpacing: 1,
                   ),
                 ),
               ),
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 20),
-                    Text(car.emoji, style: const TextStyle(fontSize: 90)),
-                    // Replace with real image:
-                    // Image.asset('assets/${car.name}.png', height: 140, fit: BoxFit.contain)
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 0,
-                left: 0,
-                right: 0,
-                child: Container(
-                  height: 80,
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(24)),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.white.withOpacity(0.08),
-                        Colors.transparent,
-                      ],
-                    ),
+            ),
+
+            // ── Top sheen ──────────────────────────
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(24)),
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.white.withOpacity(0.08),
+                      Colors.transparent,
+                    ],
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -257,8 +280,7 @@ class _CarImageCard extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  Ambient Orb (duplicated from main for
-//  self-contained background on this page)
+//  Ambient Orb
 // ─────────────────────────────────────────────
 class _AmbientOrb extends StatelessWidget {
   final Color color;

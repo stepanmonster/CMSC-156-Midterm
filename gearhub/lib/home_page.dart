@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'car_listing_model.dart';
 import 'widgets.dart';
+import 'car_image_service.dart';
 
 class HomePage extends StatefulWidget {
   final void Function(int) onTabSwitch;
@@ -114,8 +115,7 @@ class _HomePageState extends State<HomePage> {
                     letterSpacing: 0.1,
                   ),
                   children: [
-                    TextSpan(
-                        text: featuredCars[_featuredIndex].description),
+                    TextSpan(text: featuredCars[_featuredIndex].description),
                     const TextSpan(
                       text: ' Tap to read more',
                       style: TextStyle(
@@ -180,85 +180,110 @@ class _FeaturedCarCard extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 6),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.10),
-                  car.accentColor.withOpacity(0.12),
-                ],
+        child: SizedBox(
+          height: 260,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              // ── Asset photo ──────────────────────
+              CarAssetImage(
+                assetPath: car.imagePath,
+                imageKey: car.name,
+                width: double.infinity,
+                height: 260,
+                fit: BoxFit.cover,
+                accentColor: car.accentColor,
               ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.14),
-                width: 1,
+
+              // ── Bottom gradient scrim ────────────
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.transparent,
+                      Colors.black.withOpacity(0.70),
+                    ],
+                    stops: const [0.45, 1.0],
+                  ),
+                ),
               ),
-            ),
-            child: Stack(
-              children: [
-                // Top sheen
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    height: 70,
-                    decoration: BoxDecoration(
-                      borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(24)),
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.white.withOpacity(0.09),
-                          Colors.transparent,
-                        ],
-                      ),
+
+              // ── Glass border ─────────────────────
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.14),
+                    width: 1,
+                  ),
+                ),
+              ),
+
+              // ── Top sheen ────────────────────────
+              Positioned(
+                top: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 70,
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(24)),
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.white.withOpacity(0.09),
+                        Colors.transparent,
+                      ],
                     ),
                   ),
                 ),
-                // Car emoji / image
-                Center(
-                  child: Text(
-                    car.emoji,
-                    style: const TextStyle(fontSize: 100),
-                  ),
-                  // Replace with:
-                  // Image.network('your_image_url', height: 160, fit: BoxFit.contain)
-                ),
-                // Name + year label bottom-left
-                Positioned(
-                  bottom: 14,
-                  left: 18,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        car.name,
-                        style: const TextStyle(
-                          fontSize: 17,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
-                          letterSpacing: 0.2,
-                        ),
+              ),
+
+              // ── Name + year ──────────────────────
+              Positioned(
+                bottom: 18,
+                left: 20,
+                right: 20,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      car.name,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.2,
+                        shadows: [
+                          Shadow(
+                            color: Colors.black54,
+                            blurRadius: 8,
+                            offset: Offset(0, 2),
+                          ),
+                        ],
                       ),
-                      Text(
-                        '${car.year}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withOpacity(0.5),
-                          letterSpacing: 0.5,
-                        ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${car.year}',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withOpacity(0.65),
+                        letterSpacing: 0.5,
+                        shadows: const [
+                          Shadow(color: Colors.black54, blurRadius: 6),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -300,24 +325,26 @@ class _NewsCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Thumbnail placeholder
+                // ── Thumbnail ────────────────────────
                 ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: Container(
+                  child: SizedBox(
                     width: 90,
                     height: 80,
-                    color: Colors.white.withOpacity(0.07),
-                    child: Center(
-                      child: Text(
-                        news.emoji,
-                        style: const TextStyle(fontSize: 36),
-                      ),
-                      // Replace with:
-                      // Image.network(news.imageUrl, fit: BoxFit.cover)
+                    child: CarAssetImage(
+                      assetPath: news.imagePath,
+                      imageKey: news.title,
+                      width: 90,
+                      height: 80,
+                      fit: BoxFit.cover,
+                      accentColor: const Color(0xFFEF5350),
                     ),
                   ),
                 ),
+
                 const SizedBox(width: 14),
+
+                // ── Text ─────────────────────────────
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
