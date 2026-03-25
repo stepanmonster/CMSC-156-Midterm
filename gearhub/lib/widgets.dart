@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'models.dart';
+import 'car_listing_model.dart';
 
 // ─────────────────────────────────────────────
 //  Glass Top Bar
@@ -17,56 +17,133 @@ class GlassTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top + 10,
-        left: 16,
-        right: 16,
-        bottom: 4,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-          child: Container(
-            height: 56,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withOpacity(0.14),
-                  Colors.white.withOpacity(0.05),
-                ],
+    return SafeArea(
+      bottom: false,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 12, bottom: 4),
+        child: Center(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(32),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(32),
+                  color: const Color(0xFF1C1C1E).withOpacity(0.85),
+                  border: Border.all(
+                    color: Colors.white.withOpacity(0.12),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 20,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Home tab
+                      GestureDetector(
+                        onTap: () => onTabChanged(0),
+                        behavior: HitTestBehavior.opaque,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26),
+                            gradient: selectedTab == 0
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFFEF7B50),
+                                      Color(0xFFB84A1C)
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  )
+                                : null,
+                            boxShadow: selectedTab == 0
+                                ? [
+                                    BoxShadow(
+                                      color: const Color(0xFFEF5350)
+                                          .withOpacity(0.5),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: Text(
+                            'Home',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: selectedTab == 0
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: selectedTab == 0
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.50),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Cars tab
+                      GestureDetector(
+                        onTap: () => onTabChanged(1),
+                        behavior: HitTestBehavior.opaque,
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 280),
+                          curve: Curves.easeInOut,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 28, vertical: 8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26),
+                            gradient: selectedTab == 1
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFFEF7B50),
+                                      Color(0xFFB84A1C)
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  )
+                                : null,
+                            boxShadow: selectedTab == 1
+                                ? [
+                                    BoxShadow(
+                                      color: const Color(0xFFEF5350)
+                                          .withOpacity(0.5),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ]
+                                : null,
+                          ),
+                          child: Text(
+                            'Cars',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: selectedTab == 1
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                              color: selectedTab == 1
+                                  ? Colors.white
+                                  : Colors.white.withOpacity(0.50),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              border: Border.all(
-                color: Colors.white.withOpacity(0.18),
-                width: 1,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TopTabPill(
-                  label: 'Home',
-                  isActive: selectedTab == 0,
-                  onTap: () => onTabChanged(0),
-                ),
-                const SizedBox(width: 6),
-                TopTabPill(
-                  label: 'Cars',
-                  isActive: selectedTab == 1,
-                  onTap: () => onTabChanged(1),
-                ),
-              ],
             ),
           ),
         ),
@@ -76,7 +153,7 @@ class GlassTopBar extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────
-//  Top Tab Pill
+//  Top Tab Pill (kept for compatibility)
 // ─────────────────────────────────────────────
 class TopTabPill extends StatelessWidget {
   final String label;
@@ -94,33 +171,14 @@ class TopTabPill extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: isActive
-              ? const LinearGradient(
-                  colors: [Color(0xFFEF5350), Color(0xFFB71C1C)],
-                )
-              : null,
-          color: isActive ? null : Colors.transparent,
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFFEF5350).withOpacity(0.5),
-                    blurRadius: 12,
-                  ),
-                ]
-              : null,
-        ),
+      behavior: HitTestBehavior.opaque,
+      child: Center(
         child: Text(
           label,
           style: TextStyle(
-            fontSize: 13,
+            fontSize: 15,
             fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-            color: isActive ? Colors.white : Colors.white.withOpacity(0.55),
+            color: isActive ? Colors.white : Colors.white.withOpacity(0.50),
             letterSpacing: 0.2,
           ),
         ),
@@ -218,7 +276,7 @@ class SpecCard extends StatelessWidget {
 //  Glass Car Image Card (used on Cars Page)
 // ─────────────────────────────────────────────
 class GlassCarImageCard extends StatelessWidget {
-  final CarModel car;
+  final CarListing car;
 
   const GlassCarImageCard({super.key, required this.car});
 
